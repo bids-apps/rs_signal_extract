@@ -43,6 +43,7 @@ def participant_level(args, subjects_to_analyze):
                           ):
             out_file = os.path.split(fmri_file)[-1].replace("_hmc_mni.nii.gz",
                             "_time_series.tsv")
+            out_file = os.path.join(args.output_dir, out_file)
             masker = input_data.NiftiLabelsMasker(
                             labels_img=atlas_filename,
                             verbose=3)
