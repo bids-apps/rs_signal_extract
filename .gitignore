@@ -1,0 +1,13 @@
+*.pyc
+*.so
+*~
+.#*
+*.swp
+*.swo
+.DS_Store
+build
+#*
+*#
+
+.ropeproject/
+.idea/
