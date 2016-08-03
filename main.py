@@ -3,10 +3,9 @@ import os
 from glob import glob
 
 import numpy as np
-import nibabel
+from sklearn import covariance
 
 from nilearn import input_data, datasets
-
 
 
 
@@ -30,6 +29,7 @@ def main(args):
 
 
 def participant_level(args, subjects_to_analyze):
+    # The subject level analysis: extract time-series per subject
     # Retrieve the atlas
     atlas_data = datasets.fetch_atlas_basc_multiscale_2015()
     atlas_filename = atlas_data.scale122
@@ -41,28 +41,37 @@ def participant_level(args, subjects_to_analyze):
                                            "sub-%s" % subject_label,
                                            "func", "*_hmc_mni.nii.gz")
                           ):
+            masker = input_data.NiftiLabelsMasker(
+                            labels_img=atlas_filename,
+                            standardize=True,
+                            detrend=True,
+                            verbose=3)
+            time_series = masker.fit_transform(fmri_file)
             out_file = os.path.split(fmri_file)[-1].replace("_hmc_mni.nii.gz",
                             "_time_series.tsv")
             out_file = os.path.join(args.output_dir, out_file)
-            masker = input_data.NiftiLabelsMasker(
-                            labels_img=atlas_filename,
-                            verbose=3)
-            time_series = masker.fit_transform(fmri_file)
             np.savetxt(out_file, time_series, delimiter='\t')
 
+            estimator = covariance.LedoitWolf(store_precision=True)
+            estimator.fit(time_series)
+            out_file = os.path.split(fmri_file)[-1].replace("_hmc_mni.nii.gz",
+                            "_connectome.tsv")
+            out_file = os.path.join(args.output_dir, out_file)
+            np.savetxt(out_file, estimator.precision_, delimiter='\t')
 
-#------------------------------------------------------------------------------
+
 def group_level(args, subjects_to_analyze):
     # running group level
-    brain_sizes = []
+    time_series = []
     for subject_label in subjects_to_analyze:
-        for brain_file in glob(os.path.join(args.output_dir,
-                               "sub-%s*.nii*" % subject_label)):
-            data = nibabel.load(brain_file).get_data()
-            # calcualte average mask size in voxels
-            brain_sizes.append((data != 0).sum())
+        for time_series_file in glob(os.path.join(args.output_dir,
+                                     "sub-%s*_series.tsv" % subject_label)):
+            time_series.append(np.loadtxt(time_series_file))
+    time_series = np.concatenate(time_series)
 
-    with open(os.path.join(args.output_dir, "avg_brain_size.txt"), 'w') as fp:
-        fp.write("Average brain size is %g voxels" %
-                 np.mean(brain_sizes))
+    estimator = covariance.LedoitWolf(store_precision=True)
+    estimator.fit(time_series)
+    out_file = "group_connectome.tsv"
+    out_file = os.path.join(args.output_dir, out_file)
+    np.savetxt(out_file, estimator.precision_, delimiter='\t')
 

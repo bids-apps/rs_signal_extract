@@ -7,7 +7,9 @@ RUN apt-key adv --recv-keys --keyserver hkp://pgp.mit.edu:80 0xA5D32F012649A5A9
 
 # Run apt-get calls
 RUN apt-get update \
-    && apt-get install -y python3 python3-pip python3-matplotlib python3-scipy
+    && apt-get install -y python3-pip python3-matplotlib python3-scipy \
+	python3-nibabel python3-sklearn
+
 
 RUN pip3 install nilearn
 RUN mkdir -p /code
