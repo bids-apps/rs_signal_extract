@@ -10,15 +10,12 @@ RUN apt-get update \
     && apt-get install -y python3-pip python3-matplotlib python3-scipy \
 	python3-nibabel python3-sklearn
 
-
 RUN pip3 install nilearn
 RUN mkdir -p /code
 
-RUN mkdir /oasis
-RUN mkdir /projects
-RUN mkdir /scratch
-RUN mkdir /local-scratch
 COPY run.py /code/run.py
 COPY main.py /code/main.py
+
+COPY version /version
 
 ENTRYPOINT ["/code/run.py"]
