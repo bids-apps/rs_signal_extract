@@ -1,6 +1,7 @@
 
 import os
 from glob import glob
+import sys
 
 import numpy as np
 from sklearn import covariance
@@ -50,6 +51,7 @@ def participant_level(args, subjects_to_analyze):
             out_file = os.path.split(fmri_file)[-1].replace("_hmc_mni.nii.gz",
                             "_time_series.tsv")
             out_file = os.path.join(args.output_dir, out_file)
+            sys.stderr.write("Saving time-series to %s\n" % out_file)
             np.savetxt(out_file, time_series, delimiter='\t')
 
             estimator = covariance.LedoitWolf(store_precision=True)
@@ -57,6 +59,7 @@ def participant_level(args, subjects_to_analyze):
             out_file = os.path.split(fmri_file)[-1].replace("_hmc_mni.nii.gz",
                             "_connectome.tsv")
             out_file = os.path.join(args.output_dir, out_file)
+            print("Saving connectome matrix to %s" % out_file)
             np.savetxt(out_file, estimator.precision_, delimiter='\t')
 
 
