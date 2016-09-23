@@ -14,7 +14,7 @@ build-docker: Dockerfile main.py run.py
 
 test-docker: get_data
 	-mkdir -p docker_outputs
-	docker run -v $(shell pwd):/data -v $(shell pwd)/docker_outputs:/outputs bids/rs_signal_extract /data/ds005-deriv-light /outputs participant --participant_label 01
-	docker run -v $(shell pwd):/data -v $(shell pwd)/docker_outputs:/outputs bids/rs_signal_extract /data/ds005-deriv-light /outputs participant --participant_label 02
-	docker run -v $(shell pwd):/data -v $(shell pwd)/docker_outputs:/outputs bids/rs_signal_extract /data/ds005-deriv-light /outputs participant --participant_label 03
-	docker run -v $(shell pwd):/data -v $(shell pwd)/docker_outputs:/outputs bids/rs_signal_extract /data/ds005-deriv-light /outputs group
+	docker run -v $(shell pwd)/data:/data -v $(shell pwd)/docker_outputs:/outputs bids/rs_signal_extract /data/ds005-deriv-light /outputs participant --participant_label 01
+	docker run -v $(shell pwd)/data:/data -v $(shell pwd)/docker_outputs:/outputs bids/rs_signal_extract /data/ds005-deriv-light /outputs participant --participant_label 02
+	docker run -v $(shell pwd)/data:/data -v $(shell pwd)/docker_outputs:/outputs bids/rs_signal_extract /data/ds005-deriv-light /outputs participant --participant_label 03
+	docker run -v $(shell pwd)/data:/data -v $(shell pwd)/docker_outputs:/outputs bids/rs_signal_extract /data/ds005-deriv-light /outputs group
