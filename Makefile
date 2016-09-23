@@ -10,7 +10,7 @@ test-python: get_data
 	python3 test.py
 
 build-docker: Dockerfile
-	docker build -t bids/rs_signal_extract
+	docker build -t bids/rs_signal_extract .
 
 test-docker: build-docker get_data
 	-mkdir docker_outputs
