@@ -39,8 +39,12 @@ We acknowledge all the nilearn developers
 as well as the BIDS-Apps team
 https://github.com/orgs/BIDS-Apps/people
 
+
+
 ### Usage
 This App has the following command line arguments:
+
+```
 
   usage: run.py [-h]
                 [--participant_label PARTICIPANT_LABEL [PARTICIPANT_LABEL ...]]
@@ -68,6 +72,8 @@ This App has the following command line arguments:
                           not include "sub-"). If this parameter is not provided
                           all subjects should be analyzed. Multiple participants
                           can be specified with a space separated list.
+
+```
 
 
 ### Special considerations
