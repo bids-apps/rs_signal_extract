@@ -34,11 +34,14 @@ http://neurostars.org/t/nilearn/
 
 ### Acknowledgements
 
+If you use nilearn, please cite the corresponding paper: Abraham 2014,
+Front. Neuroinform., Machine learning for neuroimaging with scikit-learn
+http://dx.doi.org/10.3389/fninf.2014.00014
+
 We acknowledge all the nilearn developers
 (https://github.com/nilearn/nilearn/graphs/contributors)
 as well as the BIDS-Apps team
 https://github.com/orgs/BIDS-Apps/people
-
 
 
 ### Usage
