@@ -16,7 +16,7 @@ RUN mkdir -p /code
 COPY run.py /code/run.py
 COPY main.py /code/main.py
 WORKDIR /code
-RUN python -c "import main; main.copy_atlas()"
+RUN python3 -c "import main; main.copy_atlas()"
 
 COPY version /version
 
