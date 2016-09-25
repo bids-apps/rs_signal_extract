@@ -1,12 +1,29 @@
 
 import os
 from glob import glob
+import sys
+import shutil
 
 import numpy as np
 from sklearn import covariance
 
 from nilearn import input_data, datasets
 
+###############################################################################
+# Functions used to build the container
+ATLAS_FILENAME = 'basc_muliscale_scale122.nii.gz'
+ATLAS_DIR = 'atlas_dir'
+
+
+def copy_atlas():
+    if not os.path.exists(ATLAS_DIR):
+        os.makedirs(ATLAS_DIR)
+    atlas_filename = datasets.fetch_atlas_basc_multiscale_2015().scale122
+    shutil.copy(atlas_filename, os.path.join(ATLAS_DIR, ATLAS_FILENAME))
+
+
+###############################################################################
+# Functions ran in the docker container
 
 
 def main(args):
@@ -31,8 +48,8 @@ def main(args):
 def participant_level(args, subjects_to_analyze):
     # The subject level analysis: extract time-series per subject
     # Retrieve the atlas
-    atlas_data = datasets.fetch_atlas_basc_multiscale_2015()
-    atlas_filename = atlas_data.scale122
+    atlas_filename = os.path.join(os.path.dirname(__file__),
+                                  ATLAS_DIR, ATLAS_FILENAME)
 
     # find all RS scans and extract time-series on them
     for subject_label in subjects_to_analyze:
@@ -50,6 +67,7 @@ def participant_level(args, subjects_to_analyze):
             out_file = os.path.split(fmri_file)[-1].replace("_hmc_mni.nii.gz",
                             "_time_series.tsv")
             out_file = os.path.join(args.output_dir, out_file)
+            sys.stderr.write("Saving time-series to %s\n" % out_file)
             np.savetxt(out_file, time_series, delimiter='\t')
 
             estimator = covariance.LedoitWolf(store_precision=True)
@@ -57,6 +75,7 @@ def participant_level(args, subjects_to_analyze):
             out_file = os.path.split(fmri_file)[-1].replace("_hmc_mni.nii.gz",
                             "_connectome.tsv")
             out_file = os.path.join(args.output_dir, out_file)
+            print("Saving connectome matrix to %s" % out_file)
             np.savetxt(out_file, estimator.precision_, delimiter='\t')
 
 

@@ -7,7 +7,7 @@ import os
 
 args = argparse.Namespace(participant_label=[],
                           analysis_level="participant",
-                          bids_dir="./ds005-deriv-3subjects",
+                          bids_dir="./data/ds005-deriv-light",
                           output_dir="./output")
 
 if not os.path.exists(args.output_dir):
