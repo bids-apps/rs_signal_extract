@@ -13,6 +13,8 @@ dependencies:
   override:
   # google drive link to test data, thanks to Gael V. and Chris G.
   # https://googledrive.com/host/0B2JWN60ZLkgkMEw4bW5VUUpSdFU/ds005-deriv-light.tar
+    - sudo -E apt-get -yq install python-sklearn
+    - pip install nilearn
     - if [[ ! -d ~/data/ds005-deriv-light/derivatives ]]; then wget -c -P ${HOME}/downloads/ -O ds005-deriv-light.tar "https://files.osf.io/file?path=%2F57e549c2b83f6901d357d15f&provider=osfstorage&nid=9q7dv&accept_url=false&action=download" && mkdir -p ${HOME}/data && tar xf ${HOME}/downloads/ds005-deriv-light.tar -C ${HOME}/data; fi
     - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
     - git describe --tags > version
