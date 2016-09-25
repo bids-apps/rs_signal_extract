@@ -15,7 +15,6 @@ RUN mkdir -p /code
 
 COPY run.py /code/run.py
 COPY main.py /code/main.py
-ADD atlas_dir /code/atlas_dir
 WORKDIR /code
 RUN python -c "import main; main.copy_atlas()"
 
