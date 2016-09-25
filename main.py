@@ -2,12 +2,28 @@
 import os
 from glob import glob
 import sys
+import shutil
 
 import numpy as np
 from sklearn import covariance
 
 from nilearn import input_data, datasets
 
+###############################################################################
+# Functions used to build the container
+ATLAS_FILENAME = 'basc_muliscale_scale122.nii.gz'
+ATLAS_DIR = 'atlas_dir'
+
+
+def copy_atlas():
+    if not os.path.exists(ATLAS_DIR):
+        os.makedirs(ATLAS_DIR)
+    atlas_filename = datasets.fetch_atlas_basc_multiscale_2015().scale122
+    shutil.copy(atlas_filename, os.path.join(ATLAS_DIR, ATLAS_FILENAME))
+
+
+###############################################################################
+# Functions ran in the docker container
 
 
 def main(args):
@@ -32,8 +48,8 @@ def main(args):
 def participant_level(args, subjects_to_analyze):
     # The subject level analysis: extract time-series per subject
     # Retrieve the atlas
-    atlas_data = datasets.fetch_atlas_basc_multiscale_2015()
-    atlas_filename = atlas_data.scale122
+    atlas_filename = os.path.join(os.path.dirname(__file__),
+                                  ATLAS_DIR, ATLAS_FILENAME)
 
     # find all RS scans and extract time-series on them
     for subject_label in subjects_to_analyze:
