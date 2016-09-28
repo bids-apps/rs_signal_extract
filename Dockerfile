@@ -10,7 +10,7 @@ RUN apt-get update \
     && apt-get install -y python3-pip python3-matplotlib python3-scipy \
 	python3-nibabel python3-sklearn
 
-RUN pip3 install nilearn=0.2.6
+RUN pip3 install nilearn==0.2.6
 RUN mkdir -p /code
 
 COPY run.py /code/run.py
