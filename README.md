@@ -1,9 +1,9 @@
-## The Resting-state signal estraction App
+# The Resting-state signal estraction App
 
 This is a BIDS-App to extract signal from a parcellation with nilearn,
 typically useful in a context of resting-state data processing.
 
-### Description
+## Description
 
 Nilearn is a Python tools for general multivariate manipulation of series
 of neuroimaging volumes. It may be used for many purposes by writing
@@ -16,12 +16,12 @@ Here, we use the nilearn NiftiLabelsMasker to extract time-series on a
 parcellation, or "max-prob" atlas:
 http://nilearn.github.io/connectivity/functional_connectomes.html#time-series-from-a-brain-parcellation-or-maxprob-atlas
 
-### Documentation
+## Documentation
 
 The nilearn documentation can be found on:
 http://nilearn.github.io
 
-### How to report errors
+## How to report errors
 
 If there are bugs or incomprehensible errors with nilearn, please report
 them on the nilearn github issue page:
@@ -31,8 +31,7 @@ Please ask questions on how to use nilearn, on neurostars, with the
 nilearn tag:
 http://neurostars.org/t/nilearn/
 
-
-### Acknowledgements
+## Acknowledgements
 
 If you use nilearn, please cite the corresponding paper: Abraham 2014,
 Front. Neuroinform., Machine learning for neuroimaging with scikit-learn
@@ -44,7 +43,8 @@ as well as the BIDS-Apps team
 https://github.com/orgs/BIDS-Apps/people
 
 
-### Usage
+## Usage
+
 This App has the following command line arguments:
 
 ```
