@@ -1,47 +1,78 @@
 version: 2
 
-general:
-  artifacts:
-    - "~/outputs"
-machine:
-  services:
-    - docker
+jobs:
+  build:
+    machine:
+      # https://circleci.com/developer/machine/image/ubuntu-2204
+      image: ubuntu-2204:2022.10.2
 
-dependencies:
-  cache_directories:
-    - "~/docker"
-    - "~/data"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - my_cache
 
-  override:
-  # google drive link to test data, thanks to Gael V. and Chris G.
-  # https://googledrive.com/host/0B2JWN60ZLkgkMEw4bW5VUUpSdFU/ds005-deriv-light.tar
-    - if [[ ! -d ~/data/ds005-deriv-light/derivatives ]]; then wget -c -P ${HOME}/downloads/ -O ds005-deriv-light.tar "https://files.osf.io/file?path=%2F57e549c2b83f6901d357d15f&provider=osfstorage&nid=9q7dv&accept_url=false&action=download" && mkdir -p ${HOME}/data && tar xf ${HOME}/downloads/ds005-deriv-light.tar -C ${HOME}/data; fi
-    - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
-    - git describe --tags > version
-    - docker build -t bids/${CIRCLE_PROJECT_REPONAME,,} . :
-        timeout: 21600
-    - mkdir -p ~/docker; docker save "bids/${CIRCLE_PROJECT_REPONAME,,}" > ~/docker/image.tar
-    - mkdir -p ${HOME}/outputs
+      # google drive link to test data, thanks to Gael V. and Chris G.
+      # https://googledrive.com/host/0B2JWN60ZLkgkMEw4bW5VUUpSdFU/ds005-deriv-light.tar
+      - run: if [[ ! -d ~/data/ds005-deriv-light/derivatives ]]; then wget -c -P ${HOME}/downloads/ -O ds005-deriv-light.tar "https://files.osf.io/file?path=%2F57e549c2b83f6901d357d15f&provider=osfstorage&nid=9q7dv&accept_url=false&action=download" && mkdir -p ${HOME}/data && tar xf ${HOME}/downloads/ds005-deriv-light.tar -C ${HOME}/data; fi
+      - run: git describe --tags --always > version
+      - run:
+          command: docker build -t bids/${CIRCLE_PROJECT_REPONAME,,} .
+          no_output_timeout: 6h
+      - run: mkdir -p ~/docker; docker save "bids/${CIRCLE_PROJECT_REPONAME,,}" > ~/docker/image.tar
+      - run: mkdir -p ${HOME}/outputs
 
-test:
-  override:
-    - docker run -ti --rm --read-only -v /tmp:/tmp -v /var/tmp:/var/tmp -v ${HOME}/data/ds005-deriv-light:/bids_dataset -v ${HOME}/outputs:/outputs bids/${CIRCLE_PROJECT_REPONAME,,} /bids_dataset /outputs participant --participant_label 01 :
-        timeout: 21600
-    - docker run -ti --rm --read-only -v /tmp:/tmp -v /var/tmp:/var/tmp -v ${HOME}/data/ds005-deriv-light:/bids_dataset -v ${HOME}/outputs:/outputs bids/${CIRCLE_PROJECT_REPONAME,,} /bids_dataset /outputs participant --participant_label 02 :
-        timeout: 21600
-    - docker run -ti --rm --read-only -v /tmp:/tmp -v /var/tmp:/var/tmp -v ${HOME}/data/ds005-deriv-light:/bids_dataset -v ${HOME}/outputs:/outputs bids/${CIRCLE_PROJECT_REPONAME,,} /bids_dataset /outputs participant --participant_label 03 :
-        timeout: 21600
-    - docker run -ti --rm --read-only -v /tmp:/tmp -v /var/tmp:/var/tmp -v ${HOME}/data/ds005-deriv-light:/bids_dataset -v ${HOME}/outputs:/outputs bids/${CIRCLE_PROJECT_REPONAME,,} /bids_dataset /outputs group :
-        timeout: 21600
+      - run:
+          command: docker run -ti --rm --read-only -v /tmp:/tmp -v /var/tmp:/var/tmp -v ${HOME}/data/ds005-deriv-light:/bids_dataset -v ${HOME}/outputs:/outputs bids/${CIRCLE_PROJECT_REPONAME,,} /bids_dataset /outputs participant --participant_label 01
+          no_output_timeout: 6h
+      - run:
+          command: docker run -ti --rm --read-only -v /tmp:/tmp -v /var/tmp:/var/tmp -v ${HOME}/data/ds005-deriv-light:/bids_dataset -v ${HOME}/outputs:/outputs bids/${CIRCLE_PROJECT_REPONAME,,} /bids_dataset /outputs participant --participant_label 02
+          no_output_timeout: 6h
+      - run:
+          command: docker run -ti --rm --read-only -v /tmp:/tmp -v /var/tmp:/var/tmp -v ${HOME}/data/ds005-deriv-light:/bids_dataset -v ${HOME}/outputs:/outputs bids/${CIRCLE_PROJECT_REPONAME,,} /bids_dataset /outputs participant --participant_label 03
+          no_output_timeout: 6h
+      - run:
+          command: docker run -ti --rm --read-only -v /tmp:/tmp -v /var/tmp:/var/tmp -v ${HOME}/data/ds005-deriv-light:/bids_dataset -v ${HOME}/outputs:/outputs bids/${CIRCLE_PROJECT_REPONAME,,} /bids_dataset /outputs group
+          no_output_timeout: 6h
 
-deployment:
-  hub:
-    owner: BIDS-Apps
-    tag: /.*/
-    commands:
-      - if [[ -n "$DOCKER_PASS" ]]; then docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS && docker push bids/${CIRCLE_PROJECT_REPONAME}:latest; fi :
-          timeout: 21600
-      - if [[ -n "$DOCKER_PASS" ]]; then docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS && docker tag bids/${CIRCLE_PROJECT_REPONAME} bids/${CIRCLE_PROJECT_REPONAME}:$CIRCLE_TAG && docker push bids/${CIRCLE_PROJECT_REPONAME}:$CIRCLE_TAG; fi :
-          timeout: 21600
+
+      - save_cache:
+          key: my_cache
+          paths:
+            - "~/docker"
+            - "~/data"
+
+  deployment:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run: docker load -i /tmp/workspace/image.tar
+      - run:
+          command: if [[ -n "$DOCKER_PASS" ]]; then docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS && docker push bids/${CIRCLE_PROJECT_REPONAME}:latest; fi
+          no_output_timeout: 6h
+      - run:
+          command: if [[ -n "$DOCKER_PASS" ]]; then docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS && docker tag bids/${CIRCLE_PROJECT_REPONAME} bids/${CIRCLE_PROJECT_REPONAME}:$CIRCLE_TAG && docker push bids/${CIRCLE_PROJECT_REPONAME}:$CIRCLE_TAG; fi
+          no_output_timeout: 6h
+
+workflows:
+  version: 2
+  build-test-deploy:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      - deployment:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
 
 # VS Code Extension Version: 1.5.1
