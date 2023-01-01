@@ -14,7 +14,7 @@ jobs:
 
       # google drive link to test data, thanks to Gael V. and Chris G.
       # https://googledrive.com/host/0B2JWN60ZLkgkMEw4bW5VUUpSdFU/ds005-deriv-light.tar
-      - run: if [[ ! -d ~/data/ds005-deriv-light/derivatives ]]; then wget -c -P ${HOME}/downloads/ -O ds005-deriv-light.tar "https://osf.io/download/ye7rx/" && mkdir -p ${HOME}/data && tar xf ${HOME}/downloads/ds005-deriv-light.tar -C ${HOME}/data; fi
+      - run: if [[ ! -d ~/data/ds005-deriv-light/derivatives ]]; then wget -c -O ${HOME}/ds005-deriv-light.tar "https://osf.io/download/ye7rx/" && mkdir -p ${HOME}/data && tar xf ${HOME}/ds005-deriv-light.tar -C ${HOME}/data; fi
       - run: git describe --tags --always > version
       - run:
           command: docker build -t bids/${CIRCLE_PROJECT_REPONAME,,} .
