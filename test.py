@@ -21,4 +21,3 @@ main(args)
 # Smoke test the group level
 args.analysis_level = "group"
 main(args)
-

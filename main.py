@@ -93,4 +93,3 @@ def group_level(args, subjects_to_analyze):
     out_file = "group_connectome.tsv"
     out_file = os.path.join(args.output_dir, out_file)
     np.savetxt(out_file, estimator.precision_, delimiter='\t')
-

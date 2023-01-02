@@ -23,5 +23,3 @@ args = parser.parse_args()
 
 from main import main
 main(args)
-
-

@@ -14,7 +14,7 @@ build-docker: Dockerfile main.py run.py
 	docker build -t bids/rs_signal_extract .
 
 run-interative:
-	docker run -it --entrypoint /bin/bash -v $(shell pwd)/data:/data -v $(shell pwd)/docker_outputs:/outputs bids/rs_signal_extract 
+	docker run -it --entrypoint /bin/bash -v $(shell pwd)/data:/data -v $(shell pwd)/docker_outputs:/outputs bids/rs_signal_extract
 
 test-docker: get_data
 	-mkdir -p docker_outputs
