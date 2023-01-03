@@ -49,20 +49,47 @@ jobs:
     - run: mkdir -p ${HOME}/outputs
 
     - run:
-        command: docker run -ti --rm --read-only \ -v ${HOME}/data/ds005-deriv-light:/bids_dataset \ -v ${HOME}/outputs:/outputs \ bids/${CIRCLE_PROJECT_REPONAME,,}
-          \ /bids_dataset \ /outputs participant \ --participant_label 01
+        command: |
+          docker run -ti --rm --read-only \
+            -v ${HOME}/data/ds005-deriv-light:/bids_dataset \
+            -v ${HOME}/outputs:/outputs \
+              bids/${CIRCLE_PROJECT_REPONAME,,} \
+                /bids_dataset \
+                /outputs \
+                participant \
+                --participant_label 01
         no_output_timeout: 6h
     - run:
-        command: docker run -ti --rm --read-only \ -v ${HOME}/data/ds005-deriv-light:/bids_dataset \ -v ${HOME}/outputs:/outputs \ bids/${CIRCLE_PROJECT_REPONAME,,}
-          \ /bids_dataset \ /outputs participant \ --participant_label 02
+        command: |
+          docker run -ti --rm --read-only \
+            -v ${HOME}/data/ds005-deriv-light:/bids_dataset \
+            -v ${HOME}/outputs:/outputs \
+              bids/${CIRCLE_PROJECT_REPONAME,,} \
+                /bids_dataset \
+                /outputs \
+                participant \
+                --participant_label 02
         no_output_timeout: 6h
     - run:
-        command: docker run -ti --rm --read-only \ -v ${HOME}/data/ds005-deriv-light:/bids_dataset \ -v ${HOME}/outputs:/outputs \ bids/${CIRCLE_PROJECT_REPONAME,,}
-          \ /bids_dataset \ /outputs participant \ --participant_label 03
+        command: |
+          docker run -ti --rm --read-only \
+            -v ${HOME}/data/ds005-deriv-light:/bids_dataset \
+            -v ${HOME}/outputs:/outputs \
+              bids/${CIRCLE_PROJECT_REPONAME,,} \
+                /bids_dataset \
+                /outputs \
+                participant \
+                --participant_label 03
         no_output_timeout: 6h
     - run:
-        command: docker run -ti --rm --read-only \ -v ${HOME}/data/ds005-deriv-light:/bids_dataset \ -v ${HOME}/outputs:/outputs \ bids/${CIRCLE_PROJECT_REPONAME,,}
-          \ /bids_dataset \ /outputs group
+        command: |
+          docker run -ti --rm --read-only \
+            -v ${HOME}/data/ds005-deriv-light:/bids_dataset \
+            -v ${HOME}/outputs:/outputs \
+              bids/${CIRCLE_PROJECT_REPONAME,,} \
+                /bids_dataset \
+                /outputs \
+                group
         no_output_timeout: 6h
 
     - save_cache:
