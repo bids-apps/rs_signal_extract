@@ -98,7 +98,7 @@ jobs:
         - ~/docker
         - ~/data
 
-  deployment:
+  deploy:
     docker:
     - image: ubuntu-2204:2022.10.2
 
