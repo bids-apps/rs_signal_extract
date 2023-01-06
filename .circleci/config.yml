@@ -119,4 +119,3 @@ workflows:
       - deploy:
           requires:
             - test
-# VS Code Extension Version: 1.5.1
