@@ -14,16 +14,18 @@ jobs:
       - run:
           name: Get test data
           command: |
-            if [[ ! -d ~/data/ds005-deriv-light/derivatives ]]; then
-              wget -c -O ${HOME}/ds005-deriv-light.tar "https://osf.io/download/ye7rx/" && \
-              mkdir -p ${HOME}/data && \
-              tar xf ${HOME}/ds005-deriv-light.tar -C ${HOME}/data;
-            fi
+            wget https://raw.githubusercontent.com/bids-apps/maintenance-tools/main/utils/get_data_from_osf.sh
+            bash get_data_from_osf.sh ds005-deriv-light          
       - run:
           name: Build Docker image
           command: |
             wget https://raw.githubusercontent.com/bids-apps/maintenance-tools/main/circleci/build_docker.sh
             bash build_docker.sh
+      - save_cache:
+          key: my_cache
+          paths:
+            - ~/docker
+            - ~/data            
       - persist_to_workspace:
           root: /home/circleci
           paths:
@@ -119,3 +121,5 @@ workflows:
       - deploy:
           requires:
             - test
+
+# VS Code Extension Version: 1.5.1
