@@ -45,6 +45,7 @@ jobs:
     - run: mkdir -p ${HOME}/outputs
 
     - run:
+        name: Run participant 01
         command: |
           docker run -ti --rm --read-only \
             -v /tmp/workspace/data/ds005-deriv-light:/bids_dataset \
@@ -56,6 +57,7 @@ jobs:
                 --participant_label 01
         no_output_timeout: 6h
     - run:
+        name: Run participant 02
         command: |
           docker run -ti --rm --read-only \
             -v /tmp/workspace/data/ds005-deriv-light:/bids_dataset \
@@ -67,6 +69,7 @@ jobs:
                 --participant_label 02
         no_output_timeout: 6h
     - run:
+        name: Run participant 03
         command: |
           docker run -ti --rm --read-only \
             -v /tmp/workspace/data/ds005-deriv-light:/bids_dataset \
@@ -78,6 +81,7 @@ jobs:
                 --participant_label 03
         no_output_timeout: 6h
     - run:
+        name: Run group
         command: |
           docker run -ti --rm --read-only \
             -v /tmp/workspace/data/ds005-deriv-light:/bids_dataset \
