@@ -115,10 +115,7 @@ workflows:
   version: 2
   build-test-deploy:
     jobs:
-    - build:
-        filters:
-          branches:
-            only: master
+    - build
     - test:
         requires:
         - build
