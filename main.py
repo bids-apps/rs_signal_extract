@@ -7,7 +7,8 @@ import shutil
 import numpy as np
 from sklearn import covariance
 
-from nilearn import input_data, datasets
+from nilearn.input_data import NiftiLabelsMasker
+from nilearn.datasets import fetch_atlas_basc_multiscale_2015
 
 ###############################################################################
 # Functions used to build the container
@@ -18,7 +19,7 @@ ATLAS_DIR = 'atlas_dir'
 def copy_atlas():
     if not os.path.exists(ATLAS_DIR):
         os.makedirs(ATLAS_DIR)
-    atlas_filename = datasets.fetch_atlas_basc_multiscale_2015().scale122
+    atlas_filename = fetch_atlas_basc_multiscale_2015().scale122
     shutil.copy(atlas_filename, os.path.join(ATLAS_DIR, ATLAS_FILENAME))
 
 
@@ -51,7 +52,7 @@ def participant_level(args, subjects_to_analyze):
     atlas_filename = os.path.join(os.path.dirname(__file__),
                                   ATLAS_DIR, ATLAS_FILENAME)
     # build masker
-    masker = input_data.NiftiLabelsMasker(
+    masker = NiftiLabelsMasker(
                             labels_img=atlas_filename,
                             standardize=True,
                             detrend=True,
