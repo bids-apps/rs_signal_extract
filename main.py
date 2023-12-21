@@ -50,19 +50,20 @@ def participant_level(args, subjects_to_analyze):
     # Retrieve the atlas
     atlas_filename = os.path.join(os.path.dirname(__file__),
                                   ATLAS_DIR, ATLAS_FILENAME)
-
-    # find all RS scans and extract time-series on them
-    for subject_label in subjects_to_analyze:
-        for fmri_file in glob(os.path.join(args.bids_dir,
-                                           "derivatives",
-                                           "sub-%s" % subject_label,
-                                           "func", "*_hmc_mni.nii.gz")
-                          ):
-            masker = input_data.NiftiLabelsMasker(
+    # build masker
+    masker = input_data.NiftiLabelsMasker(
                             labels_img=atlas_filename,
                             standardize=True,
                             detrend=True,
                             verbose=3)
+
+    # find all RS scans and extract time-series on them
+    for subject_label in subjects_to_analyze:
+        func_files = glob(os.path.join(args.bids_dir,
+                                           "derivatives",
+                                           "sub-%s" % subject_label,
+                                           "func", "*_hmc_mni.nii.gz"))
+        for fmri_file in func_files:
             time_series = masker.fit_transform(fmri_file)
             out_file = os.path.split(fmri_file)[-1].replace("_hmc_mni.nii.gz",
                             "_time_series.tsv")
@@ -93,3 +94,4 @@ def group_level(args, subjects_to_analyze):
     out_file = "group_connectome.tsv"
     out_file = os.path.join(args.output_dir, out_file)
     np.savetxt(out_file, estimator.precision_, delimiter='\t')
+
