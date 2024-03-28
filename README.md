@@ -1,3 +1,5 @@
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
 # The Resting-state signal estraction App
 
 This is a BIDS-App to extract signal from a parcellation with nilearn,
