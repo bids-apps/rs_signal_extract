@@ -1,6 +1,8 @@
 [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
-# The Resting-state signal estraction App
+# This BIDS app is not longer maintained.
+
+# The Resting-state signal extraction App
 
 This is a BIDS-App to extract signal from a parcellation with nilearn,
 typically useful in a context of resting-state data processing.
