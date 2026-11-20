@@ -7,7 +7,8 @@ import shutil
 import numpy as np
 from sklearn import covariance
 
-from nilearn import input_data, datasets
+from nilearn.input_data import NiftiLabelsMasker
+from nilearn.datasets import fetch_atlas_basc_multiscale_2015
 
 ###############################################################################
 # Functions used to build the container
@@ -18,7 +19,7 @@ ATLAS_DIR = 'atlas_dir'
 def copy_atlas():
     if not os.path.exists(ATLAS_DIR):
         os.makedirs(ATLAS_DIR)
-    atlas_filename = datasets.fetch_atlas_basc_multiscale_2015().scale122
+    atlas_filename = fetch_atlas_basc_multiscale_2015().scale122
     shutil.copy(atlas_filename, os.path.join(ATLAS_DIR, ATLAS_FILENAME))
 
 
@@ -50,19 +51,20 @@ def participant_level(args, subjects_to_analyze):
     # Retrieve the atlas
     atlas_filename = os.path.join(os.path.dirname(__file__),
                                   ATLAS_DIR, ATLAS_FILENAME)
-
-    # find all RS scans and extract time-series on them
-    for subject_label in subjects_to_analyze:
-        for fmri_file in glob(os.path.join(args.bids_dir,
-                                           "derivatives",
-                                           "sub-%s" % subject_label,
-                                           "func", "*_hmc_mni.nii.gz")
-                          ):
-            masker = input_data.NiftiLabelsMasker(
+    # build masker
+    masker = NiftiLabelsMasker(
                             labels_img=atlas_filename,
                             standardize=True,
                             detrend=True,
                             verbose=3)
+
+    # find all RS scans and extract time-series on them
+    for subject_label in subjects_to_analyze:
+        func_files = glob(os.path.join(args.bids_dir,
+                                           "derivatives",
+                                           "sub-%s" % subject_label,
+                                           "func", "*_hmc_mni.nii.gz"))
+        for fmri_file in func_files:
             time_series = masker.fit_transform(fmri_file)
             out_file = os.path.split(fmri_file)[-1].replace("_hmc_mni.nii.gz",
                             "_time_series.tsv")
